@@ -1,0 +1,48 @@
+:root {
+  --ink: #0c0b09;
+  --ink-2: #141210;
+  --paper: #f3ece1;
+  --muted: #9c9388;
+  --line: rgba(243, 236, 225, 0.1);
+  --copper: #e8a87c;
+  --copper-2: #c47a4a;
+  --sage: #8aa37a;
+  --shadow: 0 30px 80px rgba(0, 0, 0, 0.35);
+  --radius: 22px;
+  --nav: 88px;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: var(--ink);
+  color: var(--paper);
+  font-family: Outfit, system-ui, sans-serif;
+  font-weight: 400;
+  letter-spacing: 0.01em;
+  overflow-x: hidden;
+}
+
+button,
+a {
+  font-family: inherit;
+}
+
+img {
+  max-width: 100%;
+}
+
+::selection {
+  background: var(--copper);
+  color: var(--ink);
+}
