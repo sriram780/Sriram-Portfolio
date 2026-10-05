@@ -1,276 +1,42 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useState } from 'react'
 import './App.css'
-import {
-  certifications,
-  education,
-  internship,
-  navItems,
-  profile,
-  projects,
-  skillGroups,
-} from './data'
+import { education, navItems, profile, projects, skillGroups } from './data'
+
+const currentYear = new Date().getFullYear()
+
+function Icon({ name, size = 18 }) {
+  const paths = {
+    github: <path d="M12 2.7a9.3 9.3 0 0 0-2.94 18.12c.47.09.64-.2.64-.45v-1.77c-2.62.57-3.17-1.11-3.17-1.11-.43-1.08-1.04-1.37-1.04-1.37-.85-.58.06-.57.06-.57.94.07 1.43.96 1.43.96.84 1.42 2.19 1.01 2.72.77.08-.6.33-1.01.6-1.24-2.09-.23-4.29-1.03-4.29-4.62 0-1.02.37-1.85.96-2.5-.09-.23-.41-1.18.1-2.47 0 0 .78-.25 2.55.95A8.9 8.9 0 0 1 12 6.38c.79 0 1.58.1 2.34.31 1.77-1.2 2.55-.95 2.55-.95.51 1.29.19 2.24.1 2.47.6.65.96 1.48.96 2.5 0 3.6-2.2 4.39-4.3 4.62.34.29.64.83.64 1.67v2.47c0 .25.17.54.65.45A9.3 9.3 0 0 0 12 2.7Z" />,
+    linkedin: <path d="M6.1 8.3H3.2V21h2.9V8.3ZM4.65 3A1.7 1.7 0 1 0 4.7 6.4 1.7 1.7 0 0 0 4.65 3ZM21 13.7c0-3.8-2-5.6-4.7-5.6-2.17 0-3.15 1.2-3.7 2v-1.7H9.7V21h2.9v-6.3c0-1.66.32-3.27 2.38-3.27 2.03 0 2.06 1.9 2.06 3.38V21H20v-6.3h1Z" />,
+    mail: <path d="M3.5 5.5h17v13h-17v-13Zm.7 1.4 7.8 5.8 7.8-5.8M4 17.4l5.7-5M20 17.4l-5.7-5" />, arrow: <path d="M5 12h13M13 6l6 6-6 6" />, menu: <path d="M4 7h16M4 12h16M4 17h16" />, close: <path d="m6 6 12 12M18 6 6 18" />, sun: <path d="M12 3v2M12 19v2M5.64 5.64l1.42 1.42M16.94 16.94l1.42 1.42M3 12h2M19 12h2M5.64 18.36l1.42-1.42M16.94 7.06l1.42-1.42M16 12a4 4 0 1 1-8 0 4 4 0 0 1 8 0Z" />, moon: <path d="M20.4 15.4A8.4 8.4 0 0 1 8.6 3.6 8.4 8.4 0 1 0 20.4 15.4Z" />,
+  }
+  return <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">{paths[name]}</svg>
+}
 
 function App() {
   const [open, setOpen] = useState(false)
-  const [active, setActive] = useState('work')
-  const [pos, setPos] = useState({ x: 200, y: 160 })
-
-  const ticker = useMemo(
-    () => [...skillGroups.flatMap((group) => group.items), ...skillGroups.flatMap((group) => group.items)],
-    [],
-  )
-
-  useEffect(() => {
-    const onScroll = () => {
-      const ids = ['work', 'about', 'skills', 'path', 'contact']
-      const current = ids.findLast((id) => {
-        const el = document.getElementById(id)
-        return el && el.getBoundingClientRect().top < 140
-      })
-      if (current) setActive(current)
-    }
-    window.addEventListener('scroll', onScroll, { passive: true })
-    return () => window.removeEventListener('scroll', onScroll)
-  }, [])
-
-  return (
-    <div
-      className="site"
-      onMouseMove={(event) => setPos({ x: event.clientX, y: event.clientY })}
-    >
-      <div className="glow" style={{ left: pos.x, top: pos.y }} />
-      <div className="grain" />
-
-      <header className="nav">
-        <a className="brand" href="#top">
-          <span className="mark">SK</span>
-          <span className="brand-meta">
-            <strong>{profile.shortName}</strong>
-            <span>{profile.role}</span>
-          </span>
-        </a>
-        <button className="menu-btn" type="button" onClick={() => setOpen((v) => !v)}>
-          {open ? 'Close' : 'Menu'}
-        </button>
-        <nav className={`nav-links ${open ? 'open' : ''}`}>
-          {navItems.map((item) => (
-            <a
-              key={item.id}
-              href={`#${item.id}`}
-              className={active === item.id ? 'active' : ''}
-              onClick={() => setOpen(false)}
-            >
-              {item.label}
-            </a>
-          ))}
-        </nav>
-        <a className="nav-cta" href={profile.phoneHref}>
-          Call
-        </a>
-      </header>
-
-      <section className="hero" id="top">
-        <div>
-          <p className="kicker">
-            <span className="dot" />
-            {profile.availability}
-          </p>
-          <h1 className="display">
-            Naga Sai
-            <br />
-            Pavan Sriram
-            <br />
-            <em>Koripalli</em>
-          </h1>
-          <p className="role-line">{profile.role} · B.Tech CSE · 2023–2027</p>
-          <p className="lede">
-            CSE student in {profile.location}. I design REST APIs, Spring Boot
-            services, and React interfaces that stay clear and usable.
-          </p>
-          <div className="hero-actions">
-            <a className="btn btn-primary" href="#work">
-              See selected work
-            </a>
-            <a className="btn btn-ghost" href={`mailto:${profile.email}`}>
-              {profile.email}
-            </a>
-          </div>
-        </div>
-        <aside className="hero-card">
-          <h3>Now</h3>
-          <div className="stat-row">
-            <div className="stat">
-              <b>2027</b>
-              <span>CSE graduate </span>
-            </div>
-            <div className="stat">
-              <b>Java</b>
-              <span>Spring · MySQL · React</span>
-            </div>
-            <div className="stat">
-              <b>02</b>
-              <span>Featured projects</span>
-            </div>
-          </div>
-        </aside>
-      </section>
-
-      <div className="marquee" aria-hidden="true">
-        <div className="marquee-track">
-          {ticker.map((item, index) => (
-            <span key={`${item}-${index}`}>{item}</span>
-          ))}
-        </div>
-      </div>
-
-      <section className="section" id="work">
-        <div className="section-head">
-          <div>
-            <p className="kicker">Projects</p>
-            <h2>Selected work</h2>
-          </div>
-          <p>Two systems that show how I think about APIs, access control, data, and dashboards.</p>
-        </div>
-        <div className="projects">
-          {projects.map((project) => (
-            <article className="project" key={project.id}>
-              <div className="project-index">{project.index}</div>
-              <div>
-                <span className="project-tag">{project.tag}</span>
-                <h3>{project.name}</h3>
-                <h4>{project.subtitle}</h4>
-                <ul>
-                  {project.points.map((point) => (
-                    <li key={point}>{point}</li>
-                  ))}
-                </ul>
-                <div className="chips">
-                  {project.stack.map((tech) => (
-                    <span className="chip" key={tech}>
-                      {tech}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            </article>
-          ))}
-        </div>
-      </section>
-
-      <section className="section" id="about">
-        <div className="section-head">
-          <div>
-            <p className="kicker">Profile</p>
-            <h2>About</h2>
-          </div>
-        </div>
-        <div className="about-grid">
-          <p className="about-copy">{profile.summary}</p>
-          <div className="panel">
-            <h3>{education.degree}</h3>
-            <p className="edu-meta">
-              {education.school}
-              <br />
-              {education.place}
-            </p>
-            <div className="cgpa">
-              <span>{education.years}</span>
-              <strong>CGPA {education.cgpa}</strong>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section className="section" id="skills">
-        <div className="section-head">
-          <div>
-            <p className="kicker">Toolkit</p>
-            <h2>Skills</h2>
-          </div>
-          <p>A practical Java full stack stack, from collections and JDBC to Spring Boot and React.</p>
-        </div>
-        <div className="skill-grid">
-          {skillGroups.map((group) => (
-            <article className="skill-card" key={group.title}>
-              <h3>{group.title}</h3>
-              <ul>
-                {group.items.map((item) => (
-                  <li key={item}>{item}</li>
-                ))}
-              </ul>
-            </article>
-          ))}
-        </div>
-      </section>
-
-      <section className="section" id="path">
-        <div className="section-head">
-          <div>
-            <p className="kicker">Growth</p>
-            <h2>Training & credentials</h2>
-          </div>
-        </div>
-        <div className="timeline">
-          <article className="time-item">
-            <time>{internship.date}</time>
-            <div>
-              <h3>{internship.role}</h3>
-              <p>{internship.org}</p>
-            </div>
-          </article>
-          {certifications.map((item) => (
-            <article className="time-item" key={item.title}>
-              <time>{item.date}</time>
-              <div>
-                <h3>{item.title}</h3>
-                <p>{item.org}</p>
-              </div>
-            </article>
-          ))}
-        </div>
-      </section>
-
-      <section className="section" id="contact">
-        <div className="section-head">
-          <div>
-            <p className="kicker">Next</p>
-            <h2>Let’s build something sturdy.</h2>
-          </div>
-          <p>Seeking an entry-level Java Full Stack Developer role. Reach out by mail, phone, GitHub, or LinkedIn.</p>
-        </div>
-        <div className="contact">
-          <div className="panel">
-            <h3>Based in {profile.location}</h3>
-            <p className="edu-meta">
-              Available for internships, junior roles, and collaborative product work.
-            </p>
-            <a className="btn btn-primary" href={`mailto:${profile.email}`}>
-              Write an email
-            </a>
-          </div>
-          <div className="contact-links">
-            <a href={profile.phoneHref}>
-              Phone <span>{profile.phone}</span>
-            </a>
-            <a href={`mailto:${profile.email}`}>
-              Email <span>{profile.email}</span>
-            </a>
-            <a href={profile.github} target="_blank" rel="noreferrer">
-              GitHub <span>sriram780</span>
-            </a>
-            <a href={profile.linkedin} target="_blank" rel="noreferrer">
-              LinkedIn <span>Sriram Koripalli</span>
-            </a>
-          </div>
-        </div>
-      </section>
-
-      <footer className="footer">
-        <span>© {new Date().getFullYear()} {profile.shortName}</span>
-        <span>Built with React</span>
-      </footer>
-    </div>
-  )
+  const [active, setActive] = useState('home')
+  const [theme, setTheme] = useState(() => localStorage.getItem('portfolio-theme') || 'dark')
+  const [emailCopied, setEmailCopied] = useState(false)
+  useEffect(() => { document.documentElement.dataset.theme = theme; localStorage.setItem('portfolio-theme', theme) }, [theme])
+  useEffect(() => { const onScroll = () => { const current = [...navItems].reverse().find(({ id }) => document.getElementById(id)?.getBoundingClientRect().top <= 150); if (current) setActive(current.id) }; window.addEventListener('scroll', onScroll, { passive: true }); onScroll(); return () => window.removeEventListener('scroll', onScroll) }, [])
+  const closeMenu = () => setOpen(false)
+  const handleEmailClick = () => {
+    navigator.clipboard?.writeText(profile.email).then(() => {
+      setEmailCopied(true)
+      window.setTimeout(() => setEmailCopied(false), 3500)
+    }).catch(() => {})
+  }
+  return <div className="site">
+    <header className="nav"><a className="brand" href="#home" aria-label={`${profile.shortName}, home`}><span className="brand-mark">SK</span><span>{profile.shortName}</span></a><nav className={`nav-links ${open ? 'is-open' : ''}`} aria-label="Main navigation">{navItems.map((item) => <a key={item.id} className={active === item.id ? 'active' : ''} href={`#${item.id}`} onClick={closeMenu}>{item.label}</a>)}</nav><div className="nav-actions"><button className="icon-button theme-button" onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')} aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} theme`}><Icon name={theme === 'dark' ? 'sun' : 'moon'} /></button><a className="nav-contact" href="#contact">Let’s talk <Icon name="arrow" size={15} /></a><button className="icon-button menu-button" onClick={() => setOpen(!open)} aria-label={open ? 'Close menu' : 'Open menu'} aria-expanded={open}><Icon name={open ? 'close' : 'menu'} /></button></div></header>
+    <main>
+      <section className="hero section-wrap" id="home"><div className="hero-copy reveal"><p className="eyebrow"><span /> Available for opportunities</p><h1>Building the <em>reliable</em> side of the web.</h1><p className="hero-title">{profile.title}</p><p className="intro">I’m {profile.shortName}, a developer focused on Java, Spring Boot, React, Node.js, MySQL, REST APIs, and practical data-driven products.</p><div className="hero-actions"><a className="button primary" href="#projects">View projects <Icon name="arrow" size={17} /></a><a className="button secondary" href={profile.resume} target="_blank" rel="noreferrer">View resume</a><a className="text-action" href="#contact">Contact me <Icon name="arrow" size={16} /></a></div><div className="socials" aria-label="Social links"><a href={profile.github} target="_blank" rel="noreferrer" aria-label="GitHub"><Icon name="github" /></a><a href={profile.linkedin} target="_blank" rel="noreferrer" aria-label="LinkedIn"><Icon name="linkedin" /></a><a href={`mailto:${profile.email}`} aria-label="Email"><Icon name="mail" /></a></div></div><div className="hero-art reveal" aria-label="Developer focus areas"><div className="orbit orbit-one" /><div className="orbit orbit-two" /><div className="monogram">SK</div><div className="floating-card api-card"><span>01</span><strong>API Design</strong><small>Spring Boot · REST</small></div><div className="floating-card data-card"><span>02</span><strong>Data Systems</strong><small>MySQL · Redis · Kafka</small></div><div className="art-label">ENGINEERING<br /><i>WITH INTENT</i></div></div></section>
+      <section className="section-wrap about-section" id="about"><p className="section-number">01 / ABOUT</p><div className="about-layout"><h2 className="reveal">A thoughtful builder of <em>useful systems.</em></h2><div className="about-detail reveal"><p>{profile.summary}</p><a className="inline-link" href={`mailto:${profile.email}`}>Start a conversation <Icon name="arrow" size={16} /></a></div></div></section>
+      <section className="section-wrap skills-section" id="skills"><div className="section-heading"><div><p className="section-number">02 / EXPERTISE</p><h2>Technical foundation,<br /><em>purposefully applied.</em></h2></div><p>Tools and technologies grounded in my project work and technical training.</p></div><div className="skill-grid">{skillGroups.map((group, index) => <article className="skill-card reveal" key={group.title}><span>0{index + 1}</span><h3>{group.title}</h3><div>{group.items.map((item) => <b key={item}>{item}</b>)}</div></article>)}</div></section>
+      <section className="section-wrap projects-section" id="projects"><div className="section-heading"><div><p className="section-number">03 / SELECTED WORK</p><h2>Designed for real<br /><em>operational needs.</em></h2></div><p>Two systems that explore access, observability, analytics, and durable data flows.</p></div><div className="project-list">{projects.map((project) => <article className="project-card reveal" key={project.id}><div className={`project-visual ${project.id}`}><span>{project.index}</span><div className="visual-grid" /><strong>{project.category}</strong></div><div className="project-content"><p className="project-type">{project.category}</p><h3>{project.name}</h3><p>{project.description}</p><ul>{project.features.map((feature) => <li key={feature}>{feature}</li>)}</ul><div className="project-footer"><div className="tags">{project.stack.map((tech) => <span key={tech}>{tech}</span>)}</div><a href={profile.github} target="_blank" rel="noreferrer" aria-label={`View ${project.name} on GitHub profile`}><Icon name="github" /> <span>GitHub profile</span></a></div></div></article>)}</div></section>
+      <section className="section-wrap education-section" id="education"><p className="section-number">04 / EDUCATION</p><div className="education-card reveal"><span className="edu-year">{education.years}</span><div><p className="project-type">Computer Science & Engineering</p><h2>{education.degree}</h2><p>{education.school}<br />{education.place}</p></div><span className="edu-marker" /></div></section>
+      <section className="section-wrap contact-section" id="contact"><p className="section-number">05 / CONTACT</p><div className="contact-content reveal"><div><h2>Let’s make something<br /><em>that holds up.</em></h2><p>Open to internships, junior engineering roles, and product-focused collaborations.</p></div><div className="contact-actions"><a className="button primary" href={profile.emailLink} onClick={handleEmailClick}>Send an email <Icon name="arrow" size={17} /></a><p className="email-fallback" role="status">{emailCopied ? 'Email address copied — paste it into your preferred email service.' : 'Opens your email app. No email app? The address is copied for you.'}</p><a className="contact-line" href={profile.github} target="_blank" rel="noreferrer"><Icon name="github" /> GitHub</a><a className="contact-line" href={profile.linkedin} target="_blank" rel="noreferrer"><Icon name="linkedin" /> LinkedIn</a><a className="contact-line" href={profile.emailLink} onClick={handleEmailClick}><Icon name="mail" /> {profile.email}</a><a className="resume-link" href={profile.resume} download>Download resume <Icon name="arrow" size={16} /></a></div></div></section>
+    </main><footer><a className="brand" href="#home"><span className="brand-mark">SK</span><span>{profile.shortName}</span></a><span>© {currentYear} · Built with React</span><a href="#home">Back to top ↑</a></footer>
+  </div>
 }
-
 export default App
